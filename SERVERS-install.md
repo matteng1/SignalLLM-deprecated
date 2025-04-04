@@ -1,5 +1,5 @@
 # signal-cli-rest-api (needed)
-* Create signal api configuration folder to save configuration between docker file updates:
+* Create a signal api configuration directory to save configuration between docker file updates:
 ```shell
 mkdir -p $HOME/.local/share/signal-api
 ```
