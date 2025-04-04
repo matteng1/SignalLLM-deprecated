@@ -1,0 +1,12 @@
+{
+    "signal_service": "127.0.0.1:9922",
+    "phone_number": "+12345678910",
+    "has_memory": true,
+    "save_memory": true,
+    "memory_file": "conversation_history.json",
+    "llm_service_provider": "ollama",
+    "llm_service_url": "http://localhost:11434",
+    "llm_api_key": "",
+    "llm_model_options": {"model": "gemma3:12b", "keep_alive": 30},
+    "reset_memory_word": "Magicword"
+}
