@@ -1,8 +1,8 @@
 # SignalLLM
 One "simple" python file for texting with a large language model over the Signal messaging app.<br>
 Supports sending images to ollama and multimodal language models. <br><br>
-Really long conversations with memory enabled will cause OOMs or slowdowns.<br>
-Just delete, edit or move conversation_history.json or use the magic word.<br>
+**Really long conversations with memory enabled will cause OOMs or slowdowns.** <br>
+To fix it just delete, edit or move conversation_history.json or use the magic word.<br>
 
 ## Prerequisites
 * Follow instructions in [SERVERS-install.md](SERVERS-install.md) to install signal-cli-rest-api and **one of** ollama **or** llamacpp-server.<br><br>
