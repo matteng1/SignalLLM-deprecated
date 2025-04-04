@@ -11,7 +11,7 @@ Just delete, edit or move conversation_history.json or use the magic word.<br>
 sudo apt-get install python3-aiohttp python3-websockets python3-aiofiles
 ```
 * ***Download [main.py](main.py) and [config.json](config.json) from this repository.***<br><br>
-* Configure your settings in config.conf:
+* Configure your settings in config.conf (see below for more information):
 ```javascript
 {
     "signal_service": "127.0.0.1:9922",          // signal-cli-rest-api
@@ -26,8 +26,10 @@ sudo apt-get install python3-aiohttp python3-websockets python3-aiofiles
     "reset_memory_word": "Magicword"             // Word or phrase to clear memory
 }
 ```
-"llm_model_options" is ignored when using llamacpp-server.<br>
-When using ollama "model" selects which model to interact with.<br>
+### llamacpp
+"llm_model_options" is ignored<br>
+### ollama
+"model" selects which model to interact with.<br>
 "keep_alive" is how long (in minutes) the model should be loaded in memory. For speedier answers the default is set to 30 minutes.<br><br>
 * Run it
 ```shell
