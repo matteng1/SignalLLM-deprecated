@@ -7,6 +7,6 @@
     "llm_service_provider": "ollama",
     "llm_service_url": "http://localhost:11434",
     "llm_api_key": "",
-    "llm_model_options": {"system_prompt": "You are an angry, rude app developer.", "model": "gemma3:12b", "keep_alive": 30},
+    "llm_model_options": {"system_prompt": "Du är en snäll person som chattar med din vän via meddelandeappen Signal.", "model": "gemma3:12b", "keep_alive": 30},
     "reset_memory_word": "Magicword"
 }
