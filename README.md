@@ -33,7 +33,7 @@ sudo apt-get install python3-aiohttp python3-websockets python3-aiofiles
 ### llamacpp
 * llm_model_options:<br>
 **"system_prompt"**: System instructions. Can be a description of the chat companion.<br>
-The rest is ignored for now. Select model and model parameters at start of llama.cpp-server.
+The rest is ignored when using llama.cpp-server for now. Select model and model parameters when starting llama.cpp-server.
 ### ollama
 * llm_model_options:<br>
 **"system_prompt"**: System instructions. Can be a description of the chat companion. If running multi-language model the language used in the system prompt will be used in the chat.<br>
