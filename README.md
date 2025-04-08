@@ -1,7 +1,7 @@
 # SignalLLM
 One "simple" python file for texting with a large language model with the Signal messaging app.<br>
 Uses **signal-cli-rest-api** and **Ollama** (x)or **llama.cpp-server**. <br>
-**May** work with other OpenAI-compatible apis, but is not tested. <br><br>
+**May** work with other OpenAI-compatible apis with some configuration. <br><br>
 Supports **system prompt**. You can describe a character you'd like to be chatting with.<br>
 Supports sending **images** if using ollama and multimodal language model. <br><br>
 **Really long conversations with memory enabled will cause OOMs or slowdowns.** <br>
