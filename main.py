@@ -358,6 +358,7 @@ class LLMClient:
 		# If no memory: set system prompt.
 		if not self.memory_manager.get_current_memory() and self.service_adapter.system_prompt:
 			self.memory_manager.set_memory([self.service_adapter.get_system_prompt()])
+		# TODO: Check if configured system prompt is different from memory (the saved one will be used?)
 	
 	async def process_message(self, message: Dict[str, Any], recipient: str) -> Optional[Dict[str, Any]]:
 		try:
@@ -509,10 +510,13 @@ class SignalClient:
 			logger.error(f"Error in message handling: {e}")
 			logger.debug(traceback.format_exc())
 	
+	# TODO: Command_Manager
 	async def _handle_command(self, text: str) -> bool:
 		try:
 			if self.reset_memory_word and text == self.reset_memory_word:
 				self.memory_manager.reset_memory()
+				if self.llm_client.service_adapter.system_prompt:
+					self.memory_manager.set_memory([self.llm_client.service_adapter.get_system_prompt()])
 				await self.memory_manager.save_conversation()
 				return True
 			else:
