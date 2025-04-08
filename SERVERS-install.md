@@ -55,7 +55,7 @@ docker exec -it ollama ollama run "gemma3:12b"
 
 # llama.cpp-server
 *(Note: The compilation methods and optimizations have changed way too many times for me to stay current and succint.* <br>
-*Below worked a couple of weeks ago (nvidia card).* <br><br>
+*Below worked a couple of weeks ago (Nvidia GPU).* <br><br>
 * Probable prerequisites (Debian):
 ```shell
 sudo apt update
@@ -66,7 +66,7 @@ sudo apt install pciutils build-essential cmake curl libcurl4-openssl-dev
 mkdir ~/llamastuff && cd ~/llamastuff
 ```
 
-* Compile server with cuda support (nvidia card) and move binary for easier access (from shell).
+* Compile server with cuda support (Nvidia GPU) and move binary for easier access (from shell).
 ```shell
 # move to working directory
 cd ~/llamastuff
@@ -84,8 +84,8 @@ cmake --build llama.cpp/build --config Release -j --clean-first
 # for "ease" of use
 cp llama.cpp/build/bin/llama-* llama.cpp
 ```
-* Start the server:<br>
-*(Note: There is no "one size fits all" here. Try different settings.)*
+* Start the server (Nvidia GPU):<br>
+*(Note: There is no "one size fits all" here. Try different settings. ctx-size, n-gpulayers)*
 ```shell
 ./llama.cpp/llama-server \
     --model ./gemma-3-12b-it-Q4_K_M.gguf \
