@@ -91,11 +91,11 @@ class MemoryManager:
 		self._conversation_memory = []
 		logger.info("Conversation memory reset")
 	
-	def add_user_message(self, text: str) -> None:
-		self._conversation_memory.append(self._format_user_message(text))
+	def add_user_message(self, message: Dict[str, str]) -> None:
+		self._conversation_memory.append(message)
 	
-	def add_model_response(self, text: str) -> None:
-		self._conversation_memory.append(self._format_model_response(text))
+	def add_model_response(self, message: Dict[str, str]) -> None:
+		self._conversation_memory.append(message)
 	
 	def get_current_memory(self) -> str:
 		return self._conversation_memory
@@ -103,11 +103,6 @@ class MemoryManager:
 	def set_memory(self, memory: List) -> None:
 		self._conversation_memory = memory
 	
-	def _format_user_message(self, text: str) -> Dict[str, Any]:
-		return {"user": "" if not text else text.rstrip()}
-	
-	def _format_model_response(self, text: str) -> Dict[str, Any]:
-		return {"assistant":text.rstrip()}
 
 class TypingClient:	
 	def __init__(self, signal_service: str, phone_number: str, refresh_interval: int = 10):
@@ -201,12 +196,25 @@ class LLMServiceAdapter(ABC):
 		pass
 
 	@abstractmethod
+	def get_system_prompt(self) -> Dict[str, Any]:
+		pass
+
+	@abstractmethod
+	def format_user_message(self, text: str) -> Dict[str, Any]:
+		pass
+	
+	@abstractmethod
+	def format_model_response(self, text: str) -> Dict[str, Any]:
+		pass
+
+	@abstractmethod
 	def is_output_limited(self, response: Dict[str, Any]) -> bool:
 		pass	
 
 class LlamacppServerAdapter(LLMServiceAdapter):
 	def __init__(self, url: str, llm_model_options: Dict[str, Any]):
 		self.endpoint = f"{url}/v1/chat/completions"
+		self.system_prompt = llm_model_options.get("system_prompt", "")
 	
 	def prepare_payload(self, memory: List[Dict[str, Any]], images: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
 		messages = []
@@ -224,7 +232,13 @@ class LlamacppServerAdapter(LLMServiceAdapter):
 		headers["Authorization"] = f"Bearer {api_key}"
 
 		return headers
+
+	def format_user_message(self, text: str) -> Dict[str, Any]:
+		return {"user": "" if not text else text.rstrip()}
 	
+	def format_model_response(self, text: str) -> Dict[str, Any]:
+		return {"assistant":text.rstrip()}
+
 	def parse_response(self, response_data: Dict[str, Any]) -> Dict[str, Any]:
 		try:
 			# Sure. Some error checking should take place.
@@ -242,7 +256,10 @@ class LlamacppServerAdapter(LLMServiceAdapter):
 			"content": content,
 			"finish_reason": finish_reason
 		}
-	
+
+	def get_system_prompt(self) -> Dict[str, Any]:
+		return {"system":self.system_prompt} if self.system_prompt else None
+
 	def is_output_limited(self, response: Dict[str, Any]) -> bool:
 		return response.get("finish_reason") == "length"
 
@@ -252,6 +269,7 @@ class OllamaAdapter(LLMServiceAdapter):
 		self.endpoint = f"{uri}/v1/chat/completions"
 		self.model = llm_model_options.get("model", "")
 		self.keep_alive = llm_model_options.get("keep_alive", 5) # Ollama default is currently 5 min
+		self.system_prompt = llm_model_options.get("system_prompt", "")
 	
 	def prepare_payload(self, memory: List[Dict[str, Any]], images: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
 		messages = []
@@ -297,7 +315,16 @@ class OllamaAdapter(LLMServiceAdapter):
 			"content": content,
 			"finish_reason": finish_reason
 		}
+
+	def format_user_message(self, text: str) -> Dict[str, Any]:
+		return {"user": "" if not text else text.rstrip()}
 	
+	def format_model_response(self, text: str) -> Dict[str, Any]:
+		return {"assistant":text.rstrip()}
+
+	def get_system_prompt(self) -> Dict[str, Any]:
+		return {"system":self.system_prompt} if self.system_prompt else None
+
 	def is_output_limited(self, response: Dict[str, Any]) -> bool:
 		return response.get("finish_reason") == "length"
 
@@ -328,7 +355,9 @@ class LLMClient:
 		self.service_adapter = LLMServiceFactory.get_adapter(llm_service_provider, llm_service_url, llm_model_options)
 		if self.service_adapter:
 			logger.info(f"Configured service provider: {llm_service_provider}.")
-		self.service_adapter.endpoint
+		# If no memory: set system prompt.
+		if not self.memory_manager.get_current_memory() and self.service_adapter.system_prompt:
+			self.memory_manager.set_memory([self.service_adapter.get_system_prompt()])
 	
 	async def process_message(self, message: Dict[str, Any], recipient: str) -> Optional[Dict[str, Any]]:
 		try:
@@ -340,11 +369,12 @@ class LLMClient:
 				if attachment.get("content_type", "").startswith("image/")
 			]
 
-			# Only save text (for context size)
+			# Only save text (for context size/now)
 			if self.memory_manager.has_memory:
-				self.memory_manager.add_user_message(text)
+				self.memory_manager.add_user_message(self.service_adapter.format_user_message(text))
 			else:
-				self.memory_manager.set_memory(self.memory_manager._format_user_message(text))
+				user_message = self.service_adapter.format_user_message(text) if not self.service_adapter.system_prompt else {self.service_adapter.get_system_prompt(), self.service_adapter.format_user_message(text)}
+				self.memory_manager.set_memory([user_message])
 
 			memory = self.memory_manager.get_current_memory()
 
@@ -359,7 +389,7 @@ class LLMClient:
 			response = self.service_adapter.parse_response(raw_response)
 
 			if response and self.memory_manager.has_memory:
-				self.memory_manager.add_model_response(response.get("content", ""))
+				self.memory_manager.add_model_response(self.service_adapter.format_model_response(response.get("content", "")))
 				if self.memory_manager.save_memory:
 					await self.memory_manager.save_conversation()
 			return response
