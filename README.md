@@ -15,6 +15,7 @@ Docker instructions in [README-docker.md](README-docker.md).
 sudo apt-get install python3-aiohttp python3-websockets python3-aiofiles
 ```
 * ***Download [main.py](main.py) and [config.json](config.json) from this repository.***<br><br>
+## Configuration
 * Configure your settings in config.conf (see below for more information):
 ```javascript
 {
