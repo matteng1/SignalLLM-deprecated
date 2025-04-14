@@ -1,11 +1,16 @@
 # SignalLLM
-One "simple" python file for texting with a large language model with the Signal messaging app.<br>
+Python app for texting with a large language model with the Signal messaging app.<br>
 Uses **signal-cli-rest-api** and an OpenAI chat compatible endpoint. Tested with **Ollama** and **llama.cpp-server**. <br>
 **May** work with other OpenAI-compatible apis with some configuration. Use "ollama" as llm_service_provider if the endpoint can parse images. <br><br>
 Supports **system prompt**. You can describe a character you'd like to be chatting with.<br>
 Supports sending **images** if using ollama and a multimodal language model. <br><br>
-**Really long conversations with memory enabled will cause OOMs or slowdowns.** <br>
+**Really long conversations with memory enabled may cause OOMs or slowdowns.** <br>
 To fix it just delete, edit or move conversation_history.json. Or use the magic word.<br><br>
+Memory file is saved in ./files/memory/ and attachments are saved in ./files/attachments/<br><br>
+The LLM API key can be set as an environment variable.<br>
+```shell
+API_KEY="abcdef12345" python3 main.py
+```
 Docker instructions in [README-docker.md](README-docker.md).
 
 ## Prerequisites
@@ -14,16 +19,22 @@ Docker instructions in [README-docker.md](README-docker.md).
 ```shell
 sudo apt-get install python3-aiohttp python3-websockets python3-aiofiles
 ```
-* ***Download [main.py](main.py) and [config.json](config.json) from this repository.***<br><br>
+* ***Clone this repository and enter directory.***
+```shell
+git clone --depth 1 https://github.com/matteng1/SignalLLM.git
+cd SignalLLM
+```
+<br><br>
 ## Configuration
 * Configure your settings in config.conf (see below for more information):
 ```javascript
 {
     "signal_service": "127.0.0.1:9922",          // signal-cli-rest-api
-    "phone_number": "+12345678910",              // The number of the linked Signal account
-    "has_memory": true,                          // If the app should remember previous messages
-    "save_memory": true,                         // To continue at a later run
-    "memory_file": "conversation_history.json",  // Filename for above
+    "phone_number": "+12345678910",              // Number of the linked Signal account
+    "has_memory": true,                          // Remember previous messages
+    "save_memory": true,                         // Continue at a later run
+    "save_attachments": true,                    // Save received attachments
+    "memory_file": "conversation_history.json",  // Memory file
     "llm_service_provider": "ollama",            // "ollama" or "llamacpp"
     "llm_service_url": "http://localhost:11434", // Port 11434 for ollama. 8080 for llamacpp
     "llm_api_key": "",                           // api key. Leave empty for local servers.
@@ -37,10 +48,10 @@ sudo apt-get install python3-aiohttp python3-websockets python3-aiofiles
 The rest is ignored when using llama.cpp-server for now. Select model and model parameters when starting llama.cpp-server.
 ### ollama
 * llm_model_options:<br>
-**"system_prompt"**: System instructions. Can be a description of the chat companion. If running multi-language model the language used in the system prompt will be used in the chat.<br>
-**"model"**:         selects which model to interact with.<br>
-**"keep_alive"**:    how long (in minutes) the model should be loaded in memory. For speedier answers the default is set to 30 minutes.<br><br><br>
-* Run it
+**"system_prompt"**: System instructions. Can be a description of the chat companion. If running a multi-language model the language used in the system prompt will be used in the chat.<br>
+**"model"**:         Which model to interact with.<br>
+**"keep_alive"**:    How long (in minutes) the model should be loaded in memory. For speedier answers the default is set to 30 minutes.<br><br><br>
+## Run it
 ```shell
 python3 main.py
 ```
