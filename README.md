@@ -11,7 +11,7 @@ The LLM API key can be set as an environment variable.<br>
 ```shell
 API_KEY="abcdef12345" python3 main.py
 ```
-Docker instructions in [README-docker.md](README-docker.md).
+Docker instructions in [README-docker.md](README-docker.md).<br><br>
 
 ## Prerequisites
 * Follow the instructions in [SERVERS-install.md](SERVERS-install.md) to install signal-cli-rest-api and **one of** ollama **or** llamacpp-server.<br><br>
