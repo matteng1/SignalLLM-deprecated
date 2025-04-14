@@ -3,10 +3,11 @@
     "phone_number": "+12345678910",
     "has_memory": true,
     "save_memory": true,
+    "save_attachments": true,
     "memory_file": "conversation_history.json",
     "llm_service_provider": "ollama",
     "llm_service_url": "http://localhost:11434",
     "llm_api_key": "",
-    "llm_model_options": {"system_prompt": "", "model": "gemma3:12b", "keep_alive": 30},
+    "llm_model_options": {"system_prompt": "You are a friendly assistant.", "model": "gemma3:12b", "keep_alive": 30},
     "reset_memory_word": "Magicword"
 }
