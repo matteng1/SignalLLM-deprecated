@@ -1,5 +1,5 @@
 # SignalLLM
-Python app for texting a large language model using the Signal messaging app.<br>
+Python app for texting a large language model running on a local computer using the Signal messaging app.<br>
 Uses **signal-cli-rest-api** and an OpenAI chat compatible endpoint. Tested with **Ollama** and **llama.cpp-server**. <br>
 **May** work with other OpenAI-compatible apis with some configuration. Use "ollama" as llm_service_provider if the endpoint can parse images. <br><br>
 Supports **system prompt**. You can describe a character you'd like to be chatting with.<br>
@@ -44,12 +44,13 @@ cd SignalLLM
 ```
 ### llamacpp
 * llm_model_options:<br>
-**"system_prompt"**: System instructions. Can be a description of the chat companion.<br>
-"Du är en glad person som använder emojis alldeles för ofta." will make the model answer in swedish and maintain the described personality.<br><br>
+**"system_prompt"**: System instructions. Can be a description of the chat companion. If running a multi-language model the language used in the system prompt will be used in the chat.<br>
+"Du är en glad person som använder emojis alldeles för ofta." will make the model try to answer in swedish and maintain the described personality.<br><br>
 **The rest** is ignored when using llama.cpp-server for now. Select model and model parameters when starting llama.cpp-server.<br>
 ### ollama
 * llm_model_options:<br>
-**"system_prompt"**: System instructions. Can be a description of the chat companion. If running a multi-language model the language used in the system prompt will be used in the chat.<br><br>
+**"system_prompt"**: System instructions. Can be a description of the chat companion. If running a multi-language model the language used in the system prompt will be used in the chat.<br>
+"Du är en glad person som använder emojis alldeles för ofta." will make the model try to answer in swedish and maintain the described personality.<br><br>
 **"model"**:         Which model to interact with.<br><br>
 **"keep_alive"**:    How long (in minutes) the model should be loaded in memory. For speedier answers the default is set to 30 minutes.<br><br><br>
 ## Run it
