@@ -1,5 +1,5 @@
 # Docker
-Follow instructions in [SERVERS-install](SERVERS-install.md) to install signal-cli-rest-api and one of ollama or llamacpp-server. <br><br>
+Follow instructions in [README-SERVERS-install](README-SERVERS-install.md) to install signal-cli-rest-api and one of ollama or llamacpp-server. <br><br>
 
 * Clone this repository and enter it
 ```shell
