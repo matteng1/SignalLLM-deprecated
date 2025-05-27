@@ -81,13 +81,11 @@ cmake llama.cpp -B llama.cpp/build \
 # build
 cmake --build llama.cpp/build --config Release -j --clean-first
 
-# for "ease" of use
-cp llama.cpp/build/bin/llama-* llama.cpp
 ```
 * Start the server (Nvidia GPU):<br>
-*(Note: There is no "one size fits all" here. Try different settings. ctx-size, n-gpulayers)*
+*(Note: There is no "one size fits all" here. Try different settings. --ctx-size, --n-gpu-layers)*
 ```shell
-./llama.cpp/llama-server \
+./llama.cpp/build/bin/llama-server \
     --model ./gemma-3-12b-it-Q4_K_M.gguf \
     --threads 16 \
     --ctx-size 8192 \
